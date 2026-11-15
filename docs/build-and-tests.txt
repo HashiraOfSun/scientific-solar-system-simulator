@@ -1,0 +1,23 @@
+$ cmake -S outputs/ScientificSolarSystem -B work/build -DCMAKE_BUILD_TYPE=Release
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/hashira/Documents/Codex/2026-10-21/referenced-chatgpt-conversation-this-is-an/work/build
+
+$ cmake --build work/build -j 4
+[ 30%] Built target OrbitalModel
+[ 50%] Built target ScienceTests
+[ 60%] Building CXX object CMakeFiles/SolarSystem.dir/main.cpp.o
+[ 70%] Linking CXX executable SolarSystem
+[100%] Built target SolarSystem
+
+$ ctest --test-dir work/build --output-on-failure
+Test project /Users/hashira/Documents/Codex/2026-10-21/referenced-chatgpt-conversation-this-is-an/work/build
+    Start 1: science
+1/1 Test #1: science ..........................   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.00 sec
+
+$ ./work/build/ScienceTests
+PASS: 286 scientific checks
