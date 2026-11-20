@@ -1,18 +1,18 @@
 # Scientific Interactive 3D Solar System Simulator
 
-Готовая переработка существующего учебного проекта: C++17, GLFW, GLM, macOS OpenGL 4.1 Core, GLSL 410.
+An updated educational project built with C++17, GLFW, GLM, macOS OpenGL 4.1 Core, and GLSL 410.
 
-**Начните здесь:** это полная папка проекта, а не отдельный фрагмент для вставки в main.cpp. Скопируйте или распакуйте папку целиком. Старый проект на Desktop не изменён.
+**Getting started:** this is a complete project directory, not a code snippet to paste into `main.cpp`. Copy or extract the entire directory.
 
-## 1. Сборка и запуск на Mac
+## 1. Building and Running on macOS
 
-На проверенном Mac CMake, GLFW и GLM уже установлены. Если на другом Mac их нет:
+Install the required dependencies if they are not already available:
 
 ```sh
 brew install cmake glfw glm
 ```
 
-Откройте Terminal в этой папке и выполните:
+Open Terminal in the project directory and run:
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -21,71 +21,77 @@ ctest --test-dir build --output-on-failure
 ./build/SolarSystem
 ```
 
-Можно дважды нажать `Launch.command`: он выполняет те же действия. Если macOS не разрешает открыть скачанный файл, используйте команды выше. Не копируйте старую папку build: CMake хранит в ней абсолютные пути.
+Alternatively, double-click `Launch.command`. If macOS prevents the downloaded file from opening, use the commands above.
 
-После сборки ресурсы находятся рядом с программой. Можно запускать бинарный файл из другой рабочей папки. Для переноса исходников нужны все файлы, включая textures, shaders и external. Для переноса готового бинарного файла нужны его папки textures/shaders и совместимые установленные GLFW/GLM; это не автономный .app.
+Do not copy an existing `build` directory when moving the project: CMake stores absolute paths in its cache.
 
-Программа начинает с **2000-01-01 12:00 TDB (J2000.0), на паузе**. Даты не являются местным временем Алматы или UTC.
+After building, application resources are placed alongside the executable, allowing it to run from another working directory. When transferring the source project, include all files, including `textures`, `shaders`, and `external`. The compiled executable requires its texture and shader directories and compatible runtime dependencies. It is not a standalone `.app` bundle.
 
-## 2. Первые действия
+The simulation starts **paused at 2000-01-01 12:00 TDB (J2000.0)**. Dates represent TDB, not local time or UTC.
 
-1. Нажмите Space: начнётся движение, по умолчанию 10 модельных суток за реальную секунду.
-2. Нажмите `1`: камера перейдёт к Меркурию и будет следовать за ним. Нажмите `R`, чтобы увидеть внутренние орбиты.
-3. Выберите Землю (`3`), изучите её карточку. Числа в карточке имеют физические единицы и не зависят от экранного увеличения.
-4. Нажмите `T`, введите `2026-10-21`, нажмите Enter. Ввод даты переводит симуляцию на паузу. Дата устанавливается на 00:00 TDB.
-5. Нажмите `V` для всей системы. Внешние планеты движутся гораздо медленнее внутренних. Для наблюдения увеличьте темп через `+`.
-6. Нажмите `M` для физического масштаба размеров. Планеты становятся очень маленькими на общем виде; выберите одну цифрой, чтобы рассмотреть её. Цветные точки и подписи — указатели, не физические размеры.
-7. Выберите Уран (`7`) и включите оси (`X`): наклон направленной оси превышает 90°. Период вращения в карточке отрицательный по соглашению NASA; код не обращает вращение второй раз.
+## 2. First Steps
 
-## 3. Управление
+1. Press **Space** to start the simulation. The default speed is 10 simulated days per real second.
+2. Press **1** to select Mercury and follow it with the camera. Press **R** to view the inner planetary orbits.
+3. Select Earth with **3** and inspect its information panel. Physical values are independent of the display scale.
+4. Press **T**, enter `2026-10-21`, and press **Enter**. Date entry pauses the simulation and sets the time to 00:00 TDB.
+5. Press **V** to view the entire system. Outer planets move much more slowly than inner planets. Increase the simulation speed with **+**.
+6. Press **M** to enable physical scale. Planets become very small in the overview; select a planet to inspect it. Colored markers and labels indicate positions, not physical sizes.
+7. Select Uranus with **7** and enable axes with **X**. Its directed axial tilt exceeds 90°. The rotation period follows NASA’s negative-period convention; the code does not reverse the rotation a second time.
 
-| Действие | Клавиши / мышь |
+## 3. Controls
+
+| Action | Keyboard / mouse |
 |---|---|
-| Пауза / запуск | Space или кнопка Play/Pause |
-| Ускорить / замедлить время | `+` / `-`, по два раза; от 1 секунды/сек до 4096 суток/сек |
-| Обратить ход времени | B |
-| Шаг на сутки назад / вперёд | `[` / `]` или кнопки; включает паузу |
-| Ввести дату | T, YYYY-MM-DD, Enter; Esc отменяет |
-| Вернуться к эпохе J2000 | J |
-| Выбрать и отслеживать объект | 0: Солнце; 1–8: планеты; кнопки списка или метка в сцене |
-| Приблизить / отдалить | Колесо/жест прокрутки, W / S |
-| Повернуть камеру | Правая кнопка + движение; A / D; стрелки вверх / вниз |
-| Снова приблизиться к выбранному телу | F |
-| Внутренняя система / вся система | R / V |
-| Физический масштаб / увеличение радиусов | M |
-| Уменьшить / увеличить радиусы | `,` / `.`; действует в демонстрационном режиме |
-| Изменить единицы сцены на AU | K / P; расстояние камеры меняется согласованно |
-| Орбиты / оси / подписи | O / X / L |
-| Выход | Esc вне ввода даты |
+| Pause / resume | Space or Play/Pause |
+| Increase / decrease simulation speed | `+` / `-`; doubles or halves the speed, from 1 second/second to 4096 days/second |
+| Reverse time | B |
+| Step backward / forward by one day | `[` / `]` or corresponding buttons; pauses the simulation |
+| Enter a date | T, YYYY-MM-DD, Enter; Esc cancels |
+| Return to J2000 | J |
+| Select and track a body | 0: Sun; 1–8: planets; body-list buttons or scene markers |
+| Zoom in / out | Scroll wheel, scrolling gesture, W / S |
+| Rotate the camera | Right mouse drag; A / D; up / down arrows |
+| Refocus on the selected body | F |
+| Inner system / entire system | R / V |
+| Physical scale / exaggerated radii | M |
+| Decrease / increase radii | `,` / `.`; demonstration mode only |
+| Change scene units per AU | K / P; camera distance adjusts accordingly |
+| Toggle orbits / axes / labels | O / X / L |
+| Exit | Esc outside date entry |
 
-Камера является орбитальной с выбором центра слежения; свободный полёт WASD пока не реализован. При потере фокуса симуляция приостанавливает накопление времени. Задержки одного кадра более 0.5 с не учитываются: возвращение из сна не перематывает годы.
+The camera orbits a selected tracking target; free-flight WASD navigation is not implemented.
 
-## 4. Что изменилось
+Simulation time stops accumulating while the window is unfocused. Frame delays longer than 0.5 seconds are ignored so that waking the computer does not advance the simulation by years.
 
-| Раньше | Теперь |
+## 4. Main Improvements
+
+| Previous implementation | Updated implementation |
 |---|---|
-| Условные distance/speed | Коэффициенты JPL, AU, сутки, эпоха J2000 |
-| Круги в одной плоскости | Эллипсы с эксцентриситетом, наклонением, узлом и перицентром |
-| Угол = speed × время | Средняя аномалия → уравнение Кеплера → положение |
-| Один float-таймер | double JD TDB, пауза, скорость, обратный ход и календарная дата |
-| Произвольные размеры | Радиусы NASA; отдельное явно обозначенное увеличение |
-| Общая ось вращения | Реальные значения наклонов и периодов; ограниченная модель ориентации |
-| Только обзор | Выбор объекта, слежение, карточка, текущая дистанция и расчётная скорость |
-| Нет проверки физики | 286 проверок, CSV-экспорт, инструмент сравнения с Horizons |
+| Arbitrary distance and speed values | JPL coefficients, AU, days, and the J2000 epoch |
+| Coplanar circular orbits | Elliptical orbits with eccentricity, inclination, ascending node, and perihelion |
+| Angle calculated as speed × time | Mean anomaly → Kepler’s equation → position |
+| Single floating-point timer | Double-precision JD TDB, pause, speed control, reverse time, and calendar dates |
+| Arbitrary body sizes | NASA radii with separately defined display exaggeration |
+| Shared rotation axis | Physical axial tilts and rotation periods with a simplified orientation model |
+| Overview only | Body selection, tracking, information panels, current distance, and calculated speed |
+| No scientific validation | 286 checks, CSV export, and a Horizons comparison tool |
 
-По умолчанию расстояния линейны: 12 единиц сцены = 1 AU. Радиусы планет увеличены в 250 раз, Солнца — в 5 раз. Это явно написано в окне. Режим M задаёт единый физический масштаб для всех сфер. Изменение K/P меняет только систему экранных единиц, поэтому камера масштабируется вместе со сценой.
+By default, distances are linear: **12 scene units = 1 AU**. Planetary radii are exaggerated by a factor of 250 and the Sun’s radius by a factor of 5.
 
-## 5. Как устроен код
+Physical-scale mode applies a consistent scale to all spheres. Changing scene units with K/P also adjusts the camera distance.
 
-- `Planet.h/.cpp`: каталог и геометрия сферы. Каждая запись содержит величину, единицу через название поля и элементы/скорости изменения орбиты.
-- `Animation.h/.cpp`: вычисления double, календарь, часы и перевод физических величин в сцену; не зависят от OpenGL.
-- `main.cpp`: GLFW, камера, ввод, выбор, отрисовка, экспорт и внеэкранная проверка.
-- `Hud.h/.cpp`: текстовая панель и кнопки, отрисованные треугольниками OpenGL 4.1; без новой UI-библиотеки.
-- `Shader.*`, `Texture.*`, `shaders/`: загрузка шейдеров и текстур; сохранён Phong из исходного проекта, ошибки загрузки теперь останавливают запуск.
-- `tests/science_tests.cpp`: научные и календарные проверки.
-- `data/planetary_data.csv`: удобная для чтения копия параметров; программа использует каталог в Planet.cpp, а не читает CSV.
+## 5. Code Structure
 
-## 6. Экспорт и воспроизводимость
+- `Planet.h/.cpp`: body catalog and sphere geometry. Entries contain physical parameters, units identified by field names, and orbital elements with their rates of change.
+- `Animation.h/.cpp`: double-precision calculations, calendar handling, simulation clock, and physical-to-scene conversions. Independent of OpenGL.
+- `main.cpp`: GLFW integration, camera, input, selection, rendering, export, and offscreen validation.
+- `Hud.h/.cpp`: information panels and buttons rendered with OpenGL triangles, without an additional UI library.
+- `Shader.*`, `Texture.*`, `shaders/`: shader and texture loading. The original Phong lighting model is retained; loading failures stop startup.
+- `tests/science_tests.cpp`: scientific and calendar checks.
+- `data/planetary_data.csv`: a readable copy of the parameters. The application uses the catalog in `Planet.cpp` rather than loading this CSV.
+
+## 6. Export and Reproducibility
 
 ```sh
 ./build/SolarSystem --date 2026-10-21 --export state.csv
@@ -95,30 +101,38 @@ ctest --test-dir build --output-on-failure
 ./build/SolarSystem --offscreen --screenshot scene.ppm
 ```
 
-Экспорт не создаёт окно. Координаты CSV гелиоцентрические, в эклиптической системе J2000, единицы AU, время JD TDB. Файл `data/example_2026-10-21.csv` создан этой программой; это **не независимый эталон NASA**.
+CSV export does not create a window. Coordinates are heliocentric, expressed in the J2000 ecliptic frame, with distances in AU and time in JD TDB.
 
-При наличии сети можно получить независимое сравнение:
+`data/example_2026-10-21.csv` was generated by this application. It is **not an independent NASA reference dataset**.
+
+An independent comparison can be requested when network access is available:
 
 ```sh
 python3 tools/compare_horizons.py state.csv --output horizons-check
 ```
 
-Скрипт обращается к официальному API JPL, сохраняет исходные ответы и таблицу ошибок. Для повторения по сохранённым ответам используйте `--cached`. Численное сравнение с API в текущей среде не выполнено: сеть для локального процесса недоступна. Скрипт подготовлен, но не проверен на живом ответе сервиса.
+The script queries the official JPL API and saves the original responses and an error table. Use `--cached` to repeat the comparison with saved responses.
 
-## 7. Результат проверки и ограничения
+A live API comparison was not completed during the original validation because network access was unavailable. The script had not been verified against a live response at that stage.
 
-Сборка и линковка на macOS arm64 успешны; CTest: 1 тестовый набор, **286 успешных проверок**. Экспорт 9 тел в CSV выполнен. Подробности — `docs/VALIDATION.md`.
+## 7. Validation and Limitations
 
-**Открытие окна и отрисовка на GPU здесь не подтверждены.** Оконная служба macOS оказалась недоступна из среды выполнения; попытка внеэкранного OpenGL также не получила доступный pixel format. Это ограничение проверки, а не подтверждение исправности шейдеров на GPU. На обычном запуске на Mac нужна проверка по сценарию в VALIDATION.md.
+The original macOS arm64 validation completed compilation and linking successfully. One CTest suite passed **286 checks**, and CSV export produced data for nine bodies. See `docs/VALIDATION.md`.
 
-Это научно обоснованная учебная аппроксимация, а не N-body интегратор и не замена JPL Horizons. Наклоны осей реальны, но азимут полюса и нулевая фаза текстуры условны; времена восхода, сезоны, транзиты и затмения по ней определять нельзя. Луна не добавлена; земная сфера находится в барицентре Земля–Луна. Подробнее — `docs/SCIENCE.md`.
+Window creation and GPU rendering were not confirmed during that original validation. The execution environment could not access the macOS window service, and the offscreen OpenGL attempt could not obtain a suitable pixel format. This was a validation limitation, not proof that GPU rendering worked correctly. The manual verification procedure is documented in `docs/VALIDATION.md`.
 
-## 8. Следующие этапы и материалы курса
+This is a scientifically informed educational approximation, not an N-body integrator or a replacement for JPL Horizons.
 
-Читайте `docs/PLAN_RU.md`: аудит исходников, сопоставление с силлабусом, сроки, результаты этапов, роли команды и сценарий защиты. Там отдельно отмечено, что уже реализовано, а что ещё требует работы.
+Axial tilts use physical values, but pole azimuths and initial texture phases are illustrative. The model should not be used to determine sunrise times, seasons, transits, or eclipses.
 
-## AI Use
+The Moon is not modeled separately. The Earth sphere is positioned at the Earth–Moon barycenter. Further details are available in `docs/SCIENCE.md`.
 
-Эта версия создана при существенной помощи OpenAI Codex: аудит исходников, архитектура, реализация орбит, интерфейса и тестов, документация. Автоматически проверены сборка, математические тесты и CSV-экспорт. Ручная проверка интерфейса, понимание алгоритмов и самостоятельные изменения участников команды ещё не подтверждены. Эту запись следует сохранять и дополнять фактически выполненной работой.
+## 8. Development Plan and Course Materials
 
-Источники данных: NASA/JPL, перечислены с прямыми ссылками в `docs/SCIENCE.md`. Текстуры унаследованы из исходного проекта: Solar System Scope / INOVE, CC BY 4.0; сведения в `docs/CREDITS.md`.
+See `docs/PLAN_RU.md` for the source review, syllabus mapping, schedule, milestones, team roles, and presentation outline. The document distinguishes completed features from remaining work.
+
+## 9. Data Sources and Credits
+
+Planetary data comes from NASA/JPL. Direct references are listed in `docs/SCIENCE.md`.
+
+Textures are inherited from the original project and provided by **Solar System Scope / INOVE** under **CC BY 4.0**. See `docs/CREDITS.md` for attribution and licensing details.
